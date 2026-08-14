@@ -1,0 +1,36 @@
+# === Terraform ===
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+*.tfvars
+!terraform.tfvars.example
+*.tfplan
+
+# === Talos Linux & Secrets ===
+# Незашифрованные конфиги Talos (всегда шифруем через SOPS в .enc.yaml!)
+talosconfig
+controlplane.yaml
+worker.yaml
+
+# Ключи шифрования SOPS / age / SSH
+key.txt
+*.key
+*.pem
+*.pub
+
+# Временные расшифрованные SOPS файлы
+*.dec.yaml
+
+# === OS & Editors ===
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# === Envs & Local Scripts ===
+.env
+.envrc
