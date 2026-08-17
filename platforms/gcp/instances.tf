@@ -1,13 +1,7 @@
-# 1. Генерация схематики Talos (с системным расширением для GCP)
+# 1. Ресурс для генерации схематики Talos OS
 resource "talos_image_factory_schematic" "this" {
   schematic = yamlencode({
-    customization = {
-      systemExtensions = {
-        officialExtensions = [
-          "siderolabs/gcp-guest-agent"
-        ]
-      }
-    }
+    customization = {}
   })
 }
 
@@ -28,12 +22,16 @@ resource "google_compute_image" "talos" {
     source = data.talos_image_factory_urls.this.urls.disk_image
   }
 
+  # Используем валидную фичу GVNIC (Google Virtual NIC) вместо VIRTIO_NET
   guest_os_features {
-    type = "VIRTIO_NET"
+    type = "GVNIC"
+  }
+  guest_os_features {
+    type = "UEFI_COMPATIBLE"
   }
 }
 
-# 4. Создание 3 Control Plane нод без балансировщика для экономии бюджета
+# 4. Создание 3 Control Plane нод в GCP
 resource "google_compute_instance" "control_plane" {
   count        = 3
   name         = "${var.cluster_name}-cp-${count.index + 1}"
@@ -50,7 +48,6 @@ resource "google_compute_instance" "control_plane" {
 
   network_interface {
     subnetwork = google_compute_subnetwork.subnet.id
-    # Без внешних IP-адресов ради безопасности
   }
 
   tags = ["control-plane", "talos-node"]
