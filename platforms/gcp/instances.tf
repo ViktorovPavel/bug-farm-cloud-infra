@@ -18,7 +18,7 @@ resource "talos_image_factory_schematic" "this" {
 # для GCP. Версия берётся из переменной, что позволяет легко
 # обновлять Talos.
 data "talos_image_factory_urls" "this" {
-  talos_version = var.talos_version      # Например, "v1.8.3"
+  talos_version = var.talos_version # Например, "v1.8.3"
   schematic_id  = talos_image_factory_schematic.this.id
   architecture  = "amd64"
   platform      = "gcp"
@@ -51,9 +51,9 @@ resource "null_resource" "download_talos_image" {
     # При смене версии Talos — скачаем новый образ
     talos_version = var.talos_version
     # При смене schematic (если добавим кастомизацию) — тоже перескачаем
-    schematic_id  = talos_image_factory_schematic.this.id
+    schematic_id = talos_image_factory_schematic.this.id
     # Сам URL образа — на случай, если factory выдаст другой путь
-    image_url     = data.talos_image_factory_urls.this.urls.disk_image
+    image_url = data.talos_image_factory_urls.this.urls.disk_image
   }
 
   # Это команда, которая выполняется локально (на GitHub Actions runner)
@@ -120,7 +120,7 @@ resource "google_compute_image" "talos" {
 resource "google_compute_instance" "control_plane" {
   count        = 3
   name         = "${var.cluster_name}-cp-${count.index + 1}"
-  machine_type = "e2-standard-2" # 2 vCPU, 8 GB RAM
+  machine_type = "e2-standard-2"                            # 2 vCPU, 8 GB RAM
   zone         = var.zones[count.index % length(var.zones)] # Циклично по зонам
 
   boot_disk {
