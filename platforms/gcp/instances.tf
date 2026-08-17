@@ -1,14 +1,22 @@
-# Запрос у Image Factory актуального URL для дискового образа Talos OS v1.7.0 под GCP
+# 1. Генерация схематики Talos (пустая кастомизация для стандартного образа)
+data "talos_image_factory_schematic" "this" {
+  schematic = yamlencode({
+    customization = {}
+  })
+}
+
+# 2. Запрос у Image Factory актуального URL для дискового образа Talos OS v1.13.8 под GCP
 data "talos_image_factory_urls" "this" {
-  talos_version = "v1.7.0"
+  talos_version = "v1.13.8"
+  schematic_id  = data.talos_image_factory_schematic.this.id
   architecture  = "amd64"
   platform      = "gcp"
 }
 
-# Регистрация Compute Image в GCP из полученного .raw.tar.gz
+# 3. Регистрация Compute Image в GCP из полученного .raw.tar.gz
 resource "google_compute_image" "talos" {
-  name        = "talos-v1-7-0"
-  description = "Образ Talos OS v1.7.0 через Image Factory"
+  name        = "talos-v1-13-8"
+  description = "Образ Talos OS v1.13.8 через Image Factory"
 
   raw_disk {
     source = data.talos_image_factory_urls.this.urls.disk_image
@@ -19,7 +27,7 @@ resource "google_compute_image" "talos" {
   }
 }
 
-# Создание 3 Control Plane ноды без балансировщика для экономии бюджета
+# 4. Создание 3 Control Plane нод без балансировщика для экономии бюджета
 resource "google_compute_instance" "control_plane" {
   count        = 3
   name         = "${var.cluster_name}-cp-${count.index + 1}"
