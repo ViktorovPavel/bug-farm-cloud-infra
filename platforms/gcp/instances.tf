@@ -119,7 +119,7 @@ resource "google_compute_image" "talos" {
 # Распределяем по разным зонам для отказоустойчивости.
 resource "google_compute_instance" "control_plane" {
   count        = 3
-  name         = "${var.cluster_name}-cp-${count.index + 1}"
+  name         = "talos-img-${replace(var.talos_version, ".", "-")}"
   machine_type = "e2-standard-2"                            # 2 vCPU, 8 GB RAM
   zone         = var.zones[count.index % length(var.zones)] # Циклично по зонам
 
