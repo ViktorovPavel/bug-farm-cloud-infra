@@ -70,6 +70,10 @@ gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
 gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
     --member="serviceAccount:terraform-sa@${PROJECT_ID}.iam.gserviceaccount.com" \
     --role="roles/storage.objectAdmin"
+    
+gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
+    --member="serviceAccount:terraform-sa@${PROJECT_ID}.iam.gserviceaccount.com" \
+    --role="roles/storage.admin"
 ```
 
 Шаг E: Создаем Workload Identity Pool
