@@ -41,21 +41,21 @@ jobs:
       # 5. Инициализация Terraform (загрузка провайдеров и подключения к GCS бакету)
       - name: Terraform Init
         run: terraform init
-        working-directory: . # Явно задаем директорию, чтобы избежать ошибки "No configuration files"
+        working-directory: ./terraform
 
       # 6. Проверка валидности синтаксиса HCL
       - name: Terraform Validate
         run: terraform validate
-        working-directory: .
+        working-directory: ./terraform
 
       # 7. Генерация плана изменений
       - name: Terraform Plan
         run: terraform plan -no-color
         continue-on-error: false
-        working-directory: .
+        working-directory: ./terraform
 
       # 8. Автоматический примен правил только при пуше в ветку main
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve
-        working-directory: .
+        working-directory: ./terraform
