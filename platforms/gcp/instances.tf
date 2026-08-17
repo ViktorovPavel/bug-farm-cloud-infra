@@ -1,7 +1,13 @@
 # 1. Генерация схематики Talos (пустая кастомизация для стандартного образа)
-data "talos_image_factory_schematic" "this" {
+resource "talos_image_factory_schematic" "this" {
   schematic = yamlencode({
-    customization = {}
+    customization = {
+      systemExtensions = {
+        officialExtensions = [
+          "siderolabs/gcp-guest-agent"
+        ]
+      }
+    }
   })
 }
 
