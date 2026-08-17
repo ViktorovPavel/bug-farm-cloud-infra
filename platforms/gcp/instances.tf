@@ -92,7 +92,7 @@ resource "null_resource" "download_talos_image" {
 # Создаём ресурс google_compute_image, который ссылается на
 # наш файл в GCS. GCP сам скачает его оттуда при создании VM.
 resource "google_compute_image" "talos" {
-  name        = "talos-img-${var.talos_version}" # Уникальное имя с версией
+  name        = "talos-img-${replace(var.talos_version, ".", "-")}" # Уникальное имя с версией и без точек
   description = "Образ Talos OS ${var.talos_version} через Image Factory"
 
   raw_disk {
@@ -119,7 +119,7 @@ resource "google_compute_image" "talos" {
 # Распределяем по разным зонам для отказоустойчивости.
 resource "google_compute_instance" "control_plane" {
   count        = 3
-  name         = "talos-img-${replace(var.talos_version, ".", "-")}"
+  name         = "${var.cluster_name}-cp-${count.index + 1}"
   machine_type = "e2-standard-2"                            # 2 vCPU, 8 GB RAM
   zone         = var.zones[count.index % length(var.zones)] # Циклично по зонам
 
