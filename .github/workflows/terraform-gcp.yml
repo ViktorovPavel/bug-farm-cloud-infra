@@ -13,14 +13,14 @@ jobs:
 
     permissions:
       contents: read
-      id-token: write # Требуется для аутентификации через Workload Identity Federation (OIDC)
+      id-token: write # Аутентификация через Workload Identity Federation (OIDC)
 
     steps:
       # 1. Клонируем исходный код репозитория
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # 2. Авторизуемся в GCP без хранения секретных JSON-ключей (через WIF)
+      # 2. Авторизуемся в GCP без хранения секретных JSON-ключей
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v3
         with:
@@ -31,31 +31,31 @@ jobs:
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v3
 
-      # 4. Устанавливаем целевую версию Terraform CLI
+      # 4. Устанавливаем бинарник Terraform (без CLI-обёртки)
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.15.8"
           terraform_wrapper: false
 
-      # 5. Инициализация Terraform (загрузка провайдеров и подключения к GCS бакету)
+      # 5. Инициализация Terraform в правильной директории platforms/gcp
       - name: Terraform Init
         run: terraform init
-        working-directory: ./terraform
+        working-directory: platforms/gcp
 
       # 6. Проверка валидности синтаксиса HCL
       - name: Terraform Validate
         run: terraform validate
-        working-directory: ./terraform
+        working-directory: platforms/gcp
 
       # 7. Генерация плана изменений
       - name: Terraform Plan
         run: terraform plan -no-color
         continue-on-error: false
-        working-directory: ./terraform
+        working-directory: platforms/gcp
 
-      # 8. Автоматический примен правил только при пуше в ветку main
+      # 8. Автоматическое применение изменений при пуше в main
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve
-        working-directory: ./terraform
+        working-directory: platforms/gcp
