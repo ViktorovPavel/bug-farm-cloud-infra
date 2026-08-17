@@ -97,7 +97,7 @@ resource "google_compute_image" "talos" {
 
   raw_disk {
     # Используем URL из GCS (не прямой URL factory!)
-    source = "gs://${google_storage_bucket.images.name}/talos-gcp-amd64.raw.tar.gz"
+    source = "https://storage.googleapis.com/${google_storage_bucket.images.name}/talos-gcp-amd64.raw.tar.gz"
   }
 
   # Обязательные фичи для GCP
