@@ -1,10 +1,3 @@
-# Инициализация провайдера Google Cloud
-provider "google" {
-  project = var.project_id
-  region  = var.region
-  zone    = var.zone
-}
-
 # 1. Создаем приватное виртуальное облако (VPC)
 resource "google_compute_network" "vpc" {
   name                    = "${var.cluster_name}-vpc"
