@@ -3,11 +3,11 @@ terraform {
   required_providers {
     # Официальный провайдер Google Cloud
     google = {
-      source  = "hashicorp/google"
+      source = "hashicorp/google"
     }
     # Провайдер Sidero Labs для генерации конфигураций и образов Talos OS
     talos = {
-      source  = "siderolabs/talos"
+      source = "siderolabs/talos"
     }
   }
 
