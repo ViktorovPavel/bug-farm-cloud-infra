@@ -7,9 +7,9 @@ resource "talos_image_factory_schematic" "this" {
 
 # 2. Запрос у Image Factory актуального URL для дискового образа Talos OS v1.13.8 под GCP
 data "talos_image_factory_urls" "this" {
-  schematic_id = talos_image_factory_schematic.this.id
-  architecture = "amd64"
-  platform     = "gcp"
+  schematic_id  = talos_image_factory_schematic.this.id
+  architecture  = "amd64"
+  platform      = "gcp"
   talos_version = var.talos_version
 }
 
