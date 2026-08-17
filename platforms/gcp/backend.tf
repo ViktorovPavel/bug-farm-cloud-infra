@@ -10,12 +10,11 @@ terraform {
     # Официальный провайдер Talos для автогенерации URL к образу из Image Factory
     talos = {
       source  = "siderolabs/talos"
-      version = "~> 0.5"
+      version = "~> 0.7"
     }
   }
 
   # Удаленный backend для хранения состояния инфраструктуры GCP.
-  # Этот бакет создается в GCP один раз вручную или отдельным скриптом.
   backend "gcs" {
     bucket = "bug-farm-tfstate-gcp" # Уникальное имя бакета в GCP
     prefix = "platforms/gcp"        # Путь к файлу состояния внутри бакета
@@ -23,7 +22,6 @@ terraform {
 }
 
 # Инициализация провайдера Google Cloud
-
 provider "google" {
   project = var.project_id
   region  = var.region

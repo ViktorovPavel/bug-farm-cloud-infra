@@ -1,4 +1,4 @@
-# 1. Генерация схематики Talos (пустая кастомизация для стандартного образа)
+# 1. Генерация схематики Talos (с системным расширением для GCP)
 resource "talos_image_factory_schematic" "this" {
   schematic = yamlencode({
     customization = {
@@ -14,7 +14,7 @@ resource "talos_image_factory_schematic" "this" {
 # 2. Запрос у Image Factory актуального URL для дискового образа Talos OS v1.13.8 под GCP
 data "talos_image_factory_urls" "this" {
   talos_version = "v1.13.8"
-  schematic_id  = data.talos_image_factory_schematic.this.id
+  schematic_id  = talos_image_factory_schematic.this.id
   architecture  = "amd64"
   platform      = "gcp"
 }

@@ -33,7 +33,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # 2. Безопасная аутентификация в GCP через Workload Identity Federation (без keys!)
+      # 2. Безопасная аутентификация в GCP через Workload Identity Federation
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
@@ -48,7 +48,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: "1.15.8"
+          terraform_version: "1.9.5"
 
       # 5. Проверяем форматирование HCL-кода
       - name: Terraform Format Check
