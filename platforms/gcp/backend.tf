@@ -1,9 +1,9 @@
 # Фиксируем минимальную версию Terraform и необходимые провайдеры
 terraform {
-  required_version = ">= 1.15.8"
+  required_version = ">= 1.5.0"
 
   required_providers {
-    # Официальный провайдер Google Cloud для управления ресурсами GCP
+    # Официальный провайдер Google Cloud
     google = {
       source  = "hashicorp/google"
       version = "~> 7.44.0"
@@ -15,14 +15,15 @@ terraform {
     }
   }
 
-  # Хранение состояния (tfstate) в бакете Google Cloud Storage
+  # Удаленный backend для хранения состояния инфраструктуры GCP.
+  # Возвращаем оригинальные имя бакета и префикс из GCP
   backend "gcs" {
-    bucket = "bug-farm-tf-state"
-    prefix = "terraform/state"
+    bucket = "bug-farm-tfstate-gcp" # Уникальное имя бакета в GCP
+    prefix = "platforms/gcp"        # Путь к файлу состояния внутри бакета
   }
 }
 
-# Инициализируем провайдер Google с привязкой к проекту, региону и дефолтной зоне
+# Инициализируем провайдер Google с привязкой к проекту, региону и зоне
 provider "google" {
   project = var.project_id
   region  = var.region
