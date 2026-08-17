@@ -7,7 +7,6 @@ resource "talos_image_factory_schematic" "this" {
 
 # 2. Запрос у Image Factory актуального URL для дискового образа Talos OS v1.13.8 под GCP
 data "talos_image_factory_urls" "this" {
-  talos_version = "v1.13.8"
   schematic_id  = talos_image_factory_schematic.this.id
   architecture  = "amd64"
   platform      = "gcp"
@@ -15,8 +14,8 @@ data "talos_image_factory_urls" "this" {
 
 # 3. Регистрация Compute Image в GCP из полученного .raw.tar.gz
 resource "google_compute_image" "talos" {
-  name        = "talos-v1-13-8"
-  description = "Образ Talos OS v1.13.8 через Image Factory"
+  name        = "talos-img"
+  description = "Образ Talos OS через Image Factory"
 
   raw_disk {
     source = data.talos_image_factory_urls.this.urls.disk_image
