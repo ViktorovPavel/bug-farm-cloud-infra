@@ -1,10 +1,10 @@
-# 1. Создаем приватное виртуальное облако (VPC)
+# 1. Создаем изолированную виртуальную сеть (VPC)
 resource "google_compute_network" "vpc" {
   name                    = "${var.cluster_name}-vpc"
-  auto_create_subnetworks = false # Явный контроль за сетевыми диапазонами
+  auto_create_subnetworks = false # Отключаем авто-создание подсетей для точного контроля CIDR
 }
 
-# 2. Создаем подсеть для размещения нод Talos Linux
+# 2. Создаем приватную подсеть для размещения всех нод кластера
 resource "google_compute_subnetwork" "subnet" {
   name          = "${var.cluster_name}-nodes-subnet"
   ip_cidr_range = "10.10.0.0/24"
@@ -12,7 +12,7 @@ resource "google_compute_subnetwork" "subnet" {
   network       = google_compute_network.vpc.id
 }
 
-# 3. Файрвол: Разрешаем весь внутренний трафик между нодами кластера
+# 3. Настраиваем Firewall: разрешаем весь внутренний межнодовый трафик (Control Plane <-> Worker / Control Plane <-> Control Plane)
 resource "google_compute_firewall" "allow_internal" {
   name    = "${var.cluster_name}-allow-internal"
   network = google_compute_network.vpc.name
@@ -27,21 +27,20 @@ resource "google_compute_firewall" "allow_internal" {
     protocol = "udp"
   }
 
-  # Разрешаем трафик только внутри нашей подсеть 10.10.0.0/24
+  # Ограничиваем правило только диапазоном нашей подсети
   source_ranges = [google_compute_subnetwork.subnet.ip_cidr_range]
 }
 
-# 4. Файрвол: Разрешаем доступ через Google IAP (Identity-Aware Proxy)
-# Диапазон 35.235.240.0/20 зарезервирован Google для туннелирования
+# 4. Настраиваем Firewall: доступ из внешнего мира ТОЛЬКО через туннель Google IAP (Identity-Aware Proxy)
+# Служебная подсеть GCP для IAP туннелирования: 35.235.240.0/20
 resource "google_compute_firewall" "allow_iap" {
   name    = "${var.cluster_name}-allow-iap"
   network = google_compute_network.vpc.name
 
   allow {
     protocol = "tcp"
-    ports    = ["22", "50000"] # 50000 - порт Talos API (talosctl)
+    ports    = ["22", "50000"] # Port 50000 — порт Talos API для администрирования через talosctl
   }
 
-  # Источник — только проверенные прокси-серверы Google IAP
   source_ranges = ["35.235.240.0/20"]
 }
