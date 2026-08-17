@@ -10,6 +10,7 @@ data "talos_image_factory_urls" "this" {
   schematic_id = talos_image_factory_schematic.this.id
   architecture = "amd64"
   platform     = "gcp"
+  talos_version = var.talos_version
 }
 
 # 3. Регистрация Compute Image в GCP из полученного .raw.tar.gz

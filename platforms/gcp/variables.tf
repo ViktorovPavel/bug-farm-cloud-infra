@@ -31,3 +31,9 @@ variable "cluster_name" {
   default     = "bug-farm-gcp"
   description = "Имя кластера и префикс для всех создаваемых ресурсов"
 }
+
+variable "talos_version" {
+  type        = string
+  default     = "v1.8.3"
+  description = "Версия Talos Linux"
+}
