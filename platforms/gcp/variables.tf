@@ -15,6 +15,12 @@ variable "zone" {
   description = "Зона доступности внутри выбранного региона"
 }
 
+variable "zones" {
+  type        = list(string)
+  default     = ["europe-west3-a", "europe-west3-b", "europe-west3-c"]
+  description = "Список зон для размещения Control Plane нод"
+}
+
 variable "cluster_name" {
   type        = string
   default     = "bug-farm-gcp"
